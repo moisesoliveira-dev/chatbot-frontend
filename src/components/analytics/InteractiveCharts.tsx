@@ -4,8 +4,6 @@ import React from 'react';
 import {
     LineChart,
     Line,
-    AreaChart,
-    Area,
     BarChart,
     Bar,
     PieChart,
@@ -15,7 +13,6 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend,
     ResponsiveContainer
 } from 'recharts';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';

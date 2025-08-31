@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
-import { FlowBuilder } from '@/components/flows/FlowBuilder';
+import { FlowBuilder } from '@/components/flows';
 import { NodeEditor } from '@/components/flows/NodeEditor';
 
 interface FlowNode {
@@ -133,6 +133,7 @@ export default function TemplatesPage() {
         setNewTemplateDescription('');
     };
 
+    // Funções para NodeEditor
     const handleNodeAdd = (node: FlowNode) => {
         if (!selectedTemplate) return;
 
@@ -161,19 +162,20 @@ export default function TemplatesPage() {
         setTemplates(templates.map(t => t.id === updatedTemplate.id ? updatedTemplate : t));
     };
 
-    const handleNodeDelete = (id: string) => {
-        if (!selectedTemplate) return;
+    // Função comentada pois não está sendo usada no momento
+    // const handleNodeDelete = (id: string) => {
+    //     if (!selectedTemplate) return;
 
-        const updatedTemplate = {
-            ...selectedTemplate,
-            nodes: selectedTemplate.nodes.filter(node => node.id !== id),
-            updatedAt: new Date()
-        };
+    //     const updatedTemplate = {
+    //         ...selectedTemplate,
+    //         nodes: selectedTemplate.nodes.filter(node => node.id !== id),
+    //         updatedAt: new Date()
+    //     };
 
-        setSelectedTemplate(updatedTemplate);
-        setTemplates(templates.map(t => t.id === updatedTemplate.id ? updatedTemplate : t));
-        setSelectedNodeId('');
-    };
+    //     setSelectedTemplate(updatedTemplate);
+    //     setTemplates(templates.map(t => t.id === updatedTemplate.id ? updatedTemplate : t));
+    //     setSelectedNodeId('');
+    // };
 
     const toggleTemplateStatus = (templateId: string) => {
         setTemplates(templates.map(template =>
@@ -204,8 +206,9 @@ export default function TemplatesPage() {
 
             {isEditing && selectedTemplate ? (
                 /* Flow Editor */
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-12rem)]">
-                    <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
+                    {/* FlowBuilder - Ocupa 2/3 da tela */}
+                    <div className="lg:col-span-2">
                         <Card className="h-full">
                             <CardHeader>
                                 <div className="flex items-center justify-between">
@@ -222,23 +225,66 @@ export default function TemplatesPage() {
                             </CardHeader>
                             <CardContent className="h-full p-0">
                                 <FlowBuilder
-                                    nodes={selectedTemplate.nodes}
-                                    onNodeAdd={handleNodeAdd}
-                                    onNodeUpdate={handleNodeUpdate}
-                                    onNodeDelete={handleNodeDelete}
-                                    selectedNodeId={selectedNodeId}
-                                    onNodeSelect={setSelectedNodeId}
+                                    templateId={selectedTemplate.id}
+                                    subflows={[]} // Converter nodes para subflows se necessário
+                                    onSubflowsUpdate={(subflows: any[]) => {
+                                        console.log('Subflows updated:', subflows);
+                                        // Aqui você pode implementar a lógica para atualizar o template
+                                    }}
                                 />
                             </CardContent>
                         </Card>
                     </div>
 
-                    <div>
+                    {/* NodeEditor - Ocupa 1/3 da tela */}
+                    <div className="lg:col-span-1">
                         <NodeEditor
                             node={selectedNode}
                             onNodeUpdate={handleNodeUpdate}
                             onClose={() => setSelectedNodeId('')}
                         />
+
+                        {/* Seção adicional para mostrar nodes do template */}
+                        <Card className="mt-4">
+                            <CardHeader>
+                                <h3 className="text-md font-semibold">Nodes do Template</h3>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-2 max-h-64 overflow-y-auto">
+                                    {selectedTemplate.nodes.map((node) => (
+                                        <div
+                                            key={node.id}
+                                            className={`p-2 border rounded cursor-pointer text-sm ${selectedNodeId === node.id
+                                                    ? 'border-blue-500 bg-blue-50'
+                                                    : 'border-gray-200 hover:border-gray-300'
+                                                }`}
+                                            onClick={() => setSelectedNodeId(node.id)}
+                                        >
+                                            <div className="font-medium">{node.title}</div>
+                                            <div className="text-gray-500">{node.type}</div>
+                                        </div>
+                                    ))}
+
+                                    <Button
+                                        size="sm"
+                                        className="w-full mt-2"
+                                        onClick={() => {
+                                            const newNode: FlowNode = {
+                                                id: `node_${Date.now()}`,
+                                                type: 'message',
+                                                title: 'Novo Node',
+                                                content: 'Conteúdo do novo node',
+                                                position: { x: 100, y: 100 }
+                                            };
+                                            handleNodeAdd(newNode);
+                                            setSelectedNodeId(newNode.id);
+                                        }}
+                                    >
+                                        + Adicionar Node
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             ) : (

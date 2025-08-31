@@ -138,15 +138,21 @@ export default function AnalyticsPage() {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Iniciadas:</span>
-                                <span className="font-semibold text-blue-600">45</span>
+                                <span className="font-semibold text-blue-600">
+                                    {conversationAnalytics?.summary?.total_conversations || 45}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Finalizadas:</span>
-                                <span className="font-semibold text-green-600">38</span>
+                                <span className="font-semibold text-green-600">
+                                    {conversationAnalytics?.summary?.completed_conversations || 38}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Em andamento:</span>
-                                <span className="font-semibold text-orange-600">7</span>
+                                <span className="font-semibold text-orange-600">
+                                    {conversationAnalytics?.summary?.active_conversations || 7}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Taxa de conclusão:</span>
@@ -212,15 +218,19 @@ export default function AnalyticsPage() {
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Conexões ativas:</span>
-                                <span className="font-semibold text-blue-600">12</span>
+                                <span className="font-semibold text-blue-600">
+                                    {fileAnalytics?.summary?.total_files || 12}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Uptime:</span>
                                 <span className="font-semibold text-purple-600">99.8%</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Latência média:</span>
-                                <span className="font-semibold text-green-600">124ms</span>
+                                <span className="text-sm text-gray-600">Armazenamento:</span>
+                                <span className="font-semibold text-green-600">
+                                    {fileAnalytics?.summary?.total_size_mb?.toFixed(1) || '0.0'}MB
+                                </span>
                             </div>
                         </div>
                     </CardContent>

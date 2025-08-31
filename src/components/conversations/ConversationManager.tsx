@@ -10,7 +10,7 @@ import { Table } from '@/components/ui/Table';
 import { Pagination } from '@/components/ui/Pagination';
 import { Modal } from '@/components/ui/Modal';
 import { useConversations } from '@/lib/hooks/useConversations';
-import { ConversationFilters, ConversationState } from '@/lib/types';
+import { ConversationFilters } from '@/lib/types';
 
 interface ConversationManagerProps {
     className?: string;
