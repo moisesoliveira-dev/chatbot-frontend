@@ -8,7 +8,8 @@ import {
     ChatBubbleLeftRightIcon,
     ChartBarIcon,
     CogIcon,
-    Squares2X2Icon
+    Squares2X2Icon,
+    DocumentChartBarIcon
 } from '@heroicons/react/24/outline';
 import { clsx } from 'clsx';
 
@@ -17,6 +18,7 @@ const navigation = [
     { name: 'Templates', href: '/templates', icon: DocumentTextIcon },
     { name: 'Conversas', href: '/conversations', icon: ChatBubbleLeftRightIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
+    { name: 'Relatórios', href: '/reports', icon: DocumentChartBarIcon },
     { name: 'Configurações', href: '/settings', icon: CogIcon },
 ];
 

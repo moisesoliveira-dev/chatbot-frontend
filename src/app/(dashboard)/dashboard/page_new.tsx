@@ -177,10 +177,10 @@ export default function DashboardPage() {
                                 <div key={index} className="flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <div className={`w-3 h-3 rounded-full ${index === 0 ? 'bg-blue-500' :
-                                                index === 1 ? 'bg-green-500' :
-                                                    index === 2 ? 'bg-yellow-500' :
-                                                        index === 3 ? 'bg-purple-500' :
-                                                            'bg-gray-400'
+                                            index === 1 ? 'bg-green-500' :
+                                                index === 2 ? 'bg-yellow-500' :
+                                                    index === 3 ? 'bg-purple-500' :
+                                                        'bg-gray-400'
                                             }`}></div>
                                         <span className="text-sm font-medium text-gray-900">
                                             {flow.name}
@@ -190,10 +190,10 @@ export default function DashboardPage() {
                                         <div className="w-24 bg-gray-200 rounded-full h-2">
                                             <div
                                                 className={`h-2 rounded-full ${index === 0 ? 'bg-blue-500' :
-                                                        index === 1 ? 'bg-green-500' :
-                                                            index === 2 ? 'bg-yellow-500' :
-                                                                index === 3 ? 'bg-purple-500' :
-                                                                    'bg-gray-400'
+                                                    index === 1 ? 'bg-green-500' :
+                                                        index === 2 ? 'bg-yellow-500' :
+                                                            index === 3 ? 'bg-purple-500' :
+                                                                'bg-gray-400'
                                                     }`}
                                                 style={{ width: `${flow.percentage}%` }}
                                             ></div>
