@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
-import { FlowBuilder } from '@/components/flows';
+import { FlowBuilder, FlowBuilderAdvanced } from '@/components/flows';
 import { NodeEditor } from '@/components/flows/NodeEditor';
 
 interface FlowNode {
@@ -97,6 +97,7 @@ export default function TemplatesPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState<string>('all');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [isAdvancedMode, setIsAdvancedMode] = useState(false);
     const [newTemplateName, setNewTemplateName] = useState('');
     const [newTemplateDescription, setNewTemplateDescription] = useState('');
 
@@ -205,15 +206,22 @@ export default function TemplatesPage() {
             </div>
 
             {isEditing && selectedTemplate ? (
-                /* Flow Editor */
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
-                    {/* FlowBuilder - Ocupa 2/3 da tela */}
-                    <div className="lg:col-span-2">
+                isAdvancedMode ? (
+                    /* Advanced Flow Builder - Full Screen */
+                    <div className="h-[calc(100vh-12rem)]">
                         <Card className="h-full">
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-lg font-semibold">{selectedTemplate.name}</h2>
-                                    <div className="flex space-x-2">
+                                    <div className="flex items-center space-x-2">
+                                        <Badge variant="secondary">Avançado</Badge>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setIsAdvancedMode(false)}
+                                        >
+                                            Modo Simples
+                                        </Button>
                                         <Button variant="secondary" onClick={() => setIsEditing(false)}>
                                             Voltar
                                         </Button>
@@ -224,69 +232,110 @@ export default function TemplatesPage() {
                                 </div>
                             </CardHeader>
                             <CardContent className="h-full p-0">
-                                <FlowBuilder
-                                    templateId={selectedTemplate.id}
-                                    subflows={[]} // Converter nodes para subflows se necessário
-                                    onSubflowsUpdate={(subflows: any[]) => {
-                                        console.log('Subflows updated:', subflows);
-                                        // Aqui você pode implementar a lógica para atualizar o template
+                                <FlowBuilderAdvanced
+                                    templateId={Number(selectedTemplate.id)}
+                                    onSave={(flow) => {
+                                        console.log('Flow saved:', flow);
+                                        setIsEditing(false);
                                     }}
+                                    onCancel={() => setIsEditing(false)}
+                                    className="h-full"
                                 />
                             </CardContent>
                         </Card>
                     </div>
+                ) : (
+                    /* Standard Flow Editor */
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
+                        {/* FlowBuilder - Ocupa 2/3 da tela */}
+                        <div className="lg:col-span-2">
+                            <Card className="h-full">
+                                <CardHeader>
+                                    <div className="flex items-center justify-between">
+                                        <h2 className="text-lg font-semibold">{selectedTemplate.name}</h2>
+                                        <div className="flex items-center space-x-2">
+                                            <Badge variant="secondary">Simples</Badge>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setIsAdvancedMode(true)}
+                                            >
+                                                Modo Avançado
+                                            </Button>
+                                            <Button variant="secondary" onClick={() => setIsEditing(false)}>
+                                                Voltar
+                                            </Button>
+                                            <Button onClick={() => setIsEditing(false)}>
+                                                Salvar
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="h-full p-0">
+                                    <FlowBuilder
+                                        templateId={selectedTemplate.id}
+                                        subflows={[]} // Converter nodes para subflows se necessário
+                                        onSubflowsUpdate={(subflows: any[]) => {
+                                            console.log('Subflows updated:', subflows);
+                                            // Aqui você pode implementar a lógica para atualizar o template
+                                        }}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
 
-                    {/* NodeEditor - Ocupa 1/3 da tela */}
-                    <div className="lg:col-span-1">
-                        <NodeEditor
-                            node={selectedNode}
-                            onNodeUpdate={handleNodeUpdate}
-                            onClose={() => setSelectedNodeId('')}
-                        />
+                        {/* NodeEditor - Ocupa 1/3 da tela */}
+                        <div className="lg:col-span-1">
+                            <NodeEditor
+                                node={selectedNode}
+                                onNodeUpdate={handleNodeUpdate}
+                                onClose={() => setSelectedNodeId('')}
+                            />
 
-                        {/* Seção adicional para mostrar nodes do template */}
-                        <Card className="mt-4">
-                            <CardHeader>
-                                <h3 className="text-md font-semibold">Nodes do Template</h3>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-2 max-h-64 overflow-y-auto">
-                                    {selectedTemplate.nodes.map((node) => (
-                                        <div
-                                            key={node.id}
-                                            className={`p-2 border rounded cursor-pointer text-sm ${selectedNodeId === node.id
+                            {/* Seção adicional para mostrar nodes do template */}
+                            <Card className="mt-4">
+                                <CardHeader>
+                                    <h3 className="text-md font-semibold">Nodes do Template</h3>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                                        {selectedTemplate.nodes.map((node) => (
+                                            <div
+                                                key={node.id}
+                                                className={`p-2 border rounded cursor-pointer text-sm ${selectedNodeId === node.id
                                                     ? 'border-blue-500 bg-blue-50'
                                                     : 'border-gray-200 hover:border-gray-300'
-                                                }`}
-                                            onClick={() => setSelectedNodeId(node.id)}
-                                        >
-                                            <div className="font-medium">{node.title}</div>
-                                            <div className="text-gray-500">{node.type}</div>
-                                        </div>
-                                    ))}
+                                                    }`}
+                                                onClick={() => setSelectedNodeId(node.id)}
+                                            >
+                                                <div className="font-medium">{node.title}</div>
+                                                <div className="text-gray-500">{node.type}</div>
+                                            </div>
+                                        ))}
 
-                                    <Button
-                                        size="sm"
-                                        className="w-full mt-2"
-                                        onClick={() => {
-                                            const newNode: FlowNode = {
-                                                id: `node_${Date.now()}`,
-                                                type: 'message',
-                                                title: 'Novo Node',
-                                                content: 'Conteúdo do novo node',
-                                                position: { x: 100, y: 100 }
-                                            };
-                                            handleNodeAdd(newNode);
-                                            setSelectedNodeId(newNode.id);
-                                        }}
-                                    >
-                                        + Adicionar Node
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                        <Button
+                                            size="sm"
+                                            className="w-full mt-2"
+                                            onClick={() => {
+                                                const newNode: FlowNode = {
+                                                    id: `node_${Date.now()}`,
+                                                    type: 'message',
+                                                    title: 'Novo Node',
+                                                    content: 'Conteúdo do novo node',
+                                                    position: { x: 100, y: 100 }
+                                                };
+                                                handleNodeAdd(newNode);
+                                                setSelectedNodeId(newNode.id);
+                                            }}
+                                        >
+                                            + Adicionar Node
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
-                </div>
+                )
             ) : (
                 /* Templates List */
                 <>

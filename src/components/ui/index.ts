@@ -24,3 +24,14 @@ export * from './Alert';
 export * from './Progress';
 export * from './FileUpload';
 export * from './DatePicker';
+
+// Phase 10 - Optimization and Polish components
+export * from './ThemeProvider';
+export * from './ThemeToggle';
+export * from './GuidedTour';
+export * from './KeyboardShortcuts';
+export * from './ShortcutsHelp';
+export * from './ErrorBoundary';
+export * from './RetryHandler';
+export * from './PerformanceOptimizations';
+export * from './AccessibilityProvider';
